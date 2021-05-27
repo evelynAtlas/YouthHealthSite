@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>My Site</title>
+    <meta charset="UTF-8">
+    <link href="{{ url_for('static',filename='css/style.css') }}" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    {% include 'header.html' %}
+    {% include 'nav.html' %}
+    <div class="wrapper">
+      {% block content %}{% endblock %}
+    </div>
+    {% include 'footer.html' %}
+  </body>
+</html>
