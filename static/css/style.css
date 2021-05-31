@@ -1,0 +1,54 @@
+/*removes default space*/
+* {
+  margin: 0;
+}
+
+html {
+  text-align:center;
+  height: 100%; /*ensures page extends to fit screen*/
+}
+
+h1 { /*only used in header*/
+  margin: 5px;
+  margin-bottom:0px;
+  font-weight: bold;
+}
+
+body {
+  background-attachment: fixed;
+  background-position: center;
+  height: 100%;
+  bottom: 0;
+}
+
+nav {
+  width: 100%;
+  /*background-color: ;*/
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+/*styles the links in the nav*/
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  display: inline;
+}
+
+li a {
+  /*color: ;*/
+  padding: 10px;
+}
+
+footer {
+  text-align: center;
+  padding: 10px;
+  font-size: 15px;
+  bottom: 0;
+  position: fixed;
+  width: 100%;
+  /*background-color: #001E1E;*/
+}

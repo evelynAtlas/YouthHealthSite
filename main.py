@@ -30,5 +30,20 @@ def new_option(location, name, blurb, requirements, accessibility):
   db.session.commit()
   return '<h1>Added new service!</h1>'
 
+
+@app.route("/browse")
+def browse():
+  return render_template("browse.html")
+
+
+@app.route("/advocacy")
+def advocacy():
+  return render_template("advocacy.html")
+
+
+@app.route("/find_a_service")
+def find_a_service():
+  return render_template("find_service.html")
+
 if __name__ == "__main__":
     app.run(port=8080, host='0.0.0.0', debug=True)
