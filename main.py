@@ -33,7 +33,8 @@ def new_option(location, name, blurb, requirements, accessibility):
 
 @app.route("/browse")
 def browse():
-  return render_template("browse.html")
+  results = HealthOption.query.all()
+  return render_template("browse.html", results=results)
 
 
 @app.route("/advocacy")
