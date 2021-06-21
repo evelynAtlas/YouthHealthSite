@@ -1,7 +1,12 @@
 from flask import Flask, render_template, request, redirect, abort
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import asc, desc
 import sqlite3
 import library
+
+#add: new = Table(name="")
+#     db.session.add(new)
+#     db.session.commit()
 
 app = Flask('__name__')
 
@@ -15,7 +20,6 @@ class HealthOption(db.Model):
   location = db.Column(db.String(100))
   name = db.Column(db.String(75))
   blurb = db.Column(db.String(250))
-  requirements = db.Column(db.String(250))
   accessibility = db.Column(db.String(250))
 
 @app.route("/")
@@ -23,17 +27,9 @@ def home():
   return render_template("home.html")
 
 
-@app.route("/<string:location>/<string:name>/<string:blurb>/<string:requirements>/<string:accessibility>")
-def new_option(location, name, blurb, requirements, accessibility):
-  health_option = HealthOption(location=location, name=name, blurb=blurb, requirements=requirements, accessibility=accessibility)
-  db.session.add(health_option)
-  db.session.commit()
-  return '<h1>Added new service!</h1>'
-
-
 @app.route("/browse")
 def browse():
-  results = HealthOption.query.all()
+  results = HealthOption.query.order_by(HealthOption.id.desc())
   return render_template("browse.html", results=results)
 
 
