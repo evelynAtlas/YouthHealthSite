@@ -13,3 +13,16 @@
 .example_img {
   width: 100%;
 }
+
+#districts, #include, #exclude, #name {
+  display: none;
+  margin: auto;
+}
+
+#include, #exclude, #districts {
+  width: 50%;
+}
+
+i.fa {
+  margin-left: 4%;
+}

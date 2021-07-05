@@ -2,21 +2,27 @@
 
 {% block content %}
 
-<table class="w3-table-all w3-centered">
-  <h3 class="w3-center">Canterbury Health Services</h3>
-  <tr>
-    <th>Name</th>
-    <th>Location</th>
-    <th>Blurb</th>
-    <th>Accessibility</th>
-  </tr>
-  {% for item in results %}
+{% if results %}
+  <table class="w3-table-all w3-centered">
+    <h3 class="w3-center">{{statement}}</h3>
     <tr>
-      <td>{{ item.name }}</td>
-      <td>{{ item.location }}</td>
-      <td>{{ item.blurb }}</td>
-      <td>{{ item.accessibility }}</td>
-  {% endfor %}
-</table>
+      <th>Name</th>
+      <th>Location</th>
+      <th>Blurb</th>
+      <th>Accessibility</th>
+    </tr>
+    {% for item in results %}
+      <tr>
+        <td>{{ item.name }}</td>
+        <td>{{ item.location }}</td>
+        <td>{{ item.blurb }}</td>
+        <td>{{ item.accessibility }}</td>
+    {% endfor %}
+  </table>
+{% else %}
+  <p class="w3-container">Nothing matched your search.</p>
+{% endif %}
+
+
 
 {% endblock %}
