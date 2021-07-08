@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, abort
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, UserMixin
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from sqlalchemy import asc, desc
 import sqlite3
 import library
@@ -18,7 +18,7 @@ app.config['SECRET_KEY'] = 'blah'
 db = SQLAlchemy(app)
 
 login_manager = LoginManager()
-
+login_manager.init_app(app)
 
 class HealthOption(db.Model):
   id = db.Column(db.Integer, primary_key=True)
@@ -27,10 +27,30 @@ class HealthOption(db.Model):
   blurb = db.Column(db.String(250))
   accessibility = db.Column(db.String(250))
 
+class User(UserMixin, db.Model):
+  id = db.Column(db.Integer, primary_key=True)
+  admin = db.Column(db.Integer)
+  username = db.Column(db.String(30), unique=True)
+  password = db.Column(db.String(100))
+
+@login_manager.user_loader
+def user_loader(user_id):
+  return User.query.get(int(user_id))
+
 @app.route("/")
 def home():
   return render_template("home.html")
 
+@app.route('/logout')
+@login_required
+def logout():
+  logout_user()
+  return 'You are now logged out'
+
+@app.route("/unknown")
+@login_required
+def unknown():
+  return 'The current user is' + current_user.username
 
 @app.route("/browse")
 def browse():
