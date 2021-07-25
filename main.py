@@ -2,6 +2,9 @@ from flask import Flask, render_template, request, redirect, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from sqlalchemy import asc, desc
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, BooleanField
+from wtforms.validators import InputRequired, Email, Length
 import sqlite3
 import library
 
@@ -10,6 +13,12 @@ import library
 #     db.session.commit()
 
 app = Flask('__name__')
+
+class LoginForm(FlaskForm):
+  username = StringField('username', validators=[InputRequired(), Length(min=8, max=20)])
+  password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
+  remember = BooleanField('remember me')
+
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
@@ -108,7 +117,8 @@ def search():
 
 @app.route("/login")
 def login():
-  return render_template("login.html")
+  form = LoginForm
+  return render_template("login.html", form=form)
 
 
 @app.route("/sign_up")
