@@ -12,7 +12,7 @@ import library
 #     db.session.add(new)
 #     db.session.commit()
 
-app = Flask('__name__')
+app = Flask(__name__)
 
 class LoginForm(FlaskForm):
   username = StringField('username', validators=[InputRequired(), Length(min=8, max=20)])

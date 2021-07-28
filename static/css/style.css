@@ -14,7 +14,7 @@
   width: 100%;
 }
 
-#districts, #include, #exclude, #name {
+#districts, #include, #exclude, #name, .accessibility {
   display: none;
   margin: auto;
 }
@@ -23,6 +23,10 @@
   width: 50%;
 }
 
-i.fa {
+i.fa-chevron-down {
   margin-left: 4%;
+}
+
+i.fa-map-marker-alt {
+  margin-right: 2%;
 }
