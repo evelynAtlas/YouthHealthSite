@@ -1,23 +1,19 @@
 from flask import Flask, render_template, request, redirect, abort
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from sqlalchemy import asc, desc
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField
-from wtforms.validators import InputRequired, Email, Length
+from wtforms import TextField, StringField, IntegerField, PasswordField, BooleanField, SelectField, SubmitField
+from wtforms.validators import DataRequired, Optional, NumberRange, ValidationError, Length
 import sqlite3
 import library
+from flask_login import current_user, login_user, logout_user, login_required, UserMixin, LoginManager
+from werkzeug.security import generate_password_hash, check_password_hash
 
 #add: new = Table(name="")
 #     db.session.add(new)
 #     db.session.commit()
 
 app = Flask(__name__)
-
-class LoginForm(FlaskForm):
-  username = StringField('username', validators=[InputRequired(), Length(min=8, max=20)])
-  password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
-  remember = BooleanField('remember me')
 
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -40,7 +36,21 @@ class User(UserMixin, db.Model):
   id = db.Column(db.Integer, primary_key=True)
   admin = db.Column(db.Integer)
   username = db.Column(db.String(30), unique=True)
-  password = db.Column(db.String(100))
+  password_hash = db.Column(db.String(100))
+    
+  def set_password(self, password):
+    self.password_hash = generate_password_hash(password)
+
+  def check_password(self, password):
+    return check_password_hash(self.password_hash, password)
+
+  def __repr__(self):
+    return self.username
+
+class LoginForm(FlaskForm):
+  username = StringField('Username', validators=[DataRequired()])
+  password = PasswordField('Password', validators=[DataRequired()])
+  remember_me = BooleanField('Remember Me')
 
 @login_manager.user_loader
 def user_loader(user_id):
@@ -48,7 +58,11 @@ def user_loader(user_id):
 
 @app.route("/")
 def home():
-  return render_template("home.html")
+  if current_user.is_authenticated:
+    login_option ="no"
+  else:
+    login_option = "yes"
+  return render_template("home.html", login_option=login_option)
 
 @app.route('/logout')
 @login_required
@@ -59,7 +73,7 @@ def logout():
 @app.route("/unknown")
 @login_required
 def unknown():
-  return 'The current user is' + current_user.username
+  return 'The current user is' + current_user.username + 'their password hash is' + current_user.password_hash + 'their admin status is' + current_user.admin
 
 @app.route("/browse")
 def browse():
@@ -109,21 +123,40 @@ def find_a_service():
     return render_template("find_service.html")
 
 
-@app.route("/search_services")
-def search():
-  return render_template("sign_up.html")
-  #return render_template("browse.html", results=results)
-
-
-@app.route("/login")
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-  form = LoginForm
-  return render_template("login.html", form=form)
+  if current_user.is_authenticated:
+    return redirect('/')
+  form = LoginForm()
+  if form.validate_on_submit():
+    user = User.query.filter_by(username=form.username.data).first()
+    if user is None or not user.check_password(form.password.data):
+      return redirect('/login')
+    login_user(user, remember=form.remember_me.data)
+  return render_template('login.html', form=form, login = "Yes")
 
 
-@app.route("/sign_up")
+@app.route("/sign_up", methods=['GET', 'POST'])
 def sign_up():
-  return render_template("sign_up.html")
+  new_user = User()
+  form = LoginForm()
+  print(request.method)
+  if request.method == "POST":
+    if form.validate_on_submit():
+      new_user.username = form.username.data
+      new_user.set_password(form.password.data)
+      new_user.admin = 0
+      db.session.add(new_user)
+      db.session.commit()
+      user = User.query.filter_by(username=form.username.data).first()
+      login_user(user, remember=form.remember_me.data)
+      return redirect("/")
+    else:
+      print("different fail")
+  else:
+    print("failed")
+    print(form.errors)
+  return render_template("login.html", form=form)
 
 
 if __name__ == "__main__":
