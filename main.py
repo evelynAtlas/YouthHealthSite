@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, abort
+from flask import Flask, render_template, request, redirect, abort, flash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import asc, desc
 from flask_wtf import FlaskForm
@@ -68,17 +68,16 @@ def home():
 @login_required
 def logout():
   logout_user()
-  return 'You are now logged out'
-
-@app.route("/unknown")
-@login_required
-def unknown():
-  return 'The current user is' + current_user.username + 'their password hash is' + current_user.password_hash + 'their admin status is' + current_user.admin
+  return redirect('/')
 
 @app.route("/browse")
 def browse():
   results = HealthOption.query.order_by(HealthOption.id.desc())
-  return render_template("browse.html", results=results, statement="Canterbury Health Services")
+  if current_user.is_authenticated and current_user.admin == 1:
+    crud_option = "yes"
+  else:
+    crud_option = "no"
+  return render_template("browse.html", results=results, statement="Canterbury Health Services", crud_option=crud_option)
 
 
 @app.route("/advocacy")
@@ -131,13 +130,18 @@ def login():
   if form.validate_on_submit():
     user = User.query.filter_by(username=form.username.data).first()
     if user is None or not user.check_password(form.password.data):
+      print("what")
+      flash('Incorrect Password or Username', 'error')
       return redirect('/login')
-    login_user(user, remember=form.remember_me.data)
+    else:
+      login_user(user, remember=form.remember_me.data)
+      return redirect('/')
   return render_template('login.html', form=form, login = "Yes")
 
 
 @app.route("/sign_up", methods=['GET', 'POST'])
 def sign_up():
+  print("incorrect route")
   new_user = User()
   form = LoginForm()
   print(request.method)
@@ -158,6 +162,12 @@ def sign_up():
     print(form.errors)
   return render_template("login.html", form=form)
 
+@app.route('/crud')
+def crud():
+  if not current_user.is_authenticated or current_user.admin == 0:
+    abort(404)
+  else:
+    return render_template('crud.html')
 
 if __name__ == "__main__":
     app.run(port=8080, host='0.0.0.0', debug=True)

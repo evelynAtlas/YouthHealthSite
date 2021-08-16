@@ -2,6 +2,10 @@
 
 {% block content %}
 
+{% if crud_option == "yes" %}
+  <a href="/crud" class="w3-btn w3-black">Change Service Information</a>
+{% endif %}
+
 {% if results %}
   <br>
   {% for item in results %}

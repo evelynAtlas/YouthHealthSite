@@ -4,17 +4,17 @@
 
 <br>
 <div class="w3-container">
-  <form class="form_signin w3-card-4 w3-teal" method="POST" action="/sign_up">
+  <form class="form_signin w3-card-4 w3-teal" method="POST" action="/login">
     <div class="w3-center">
       <header class="w3-black w3-container">
-        {% if login %}
-          <h3>Log in or<a href="/sign_up" class="inline">Create Account</a></h3>
-        {% else %}
-          <h3>Sign up</h3>
-        {% endif %}
+        <h3>Log in or<a href="/sign_up" class="inline">Create Account</a></h3>
       </header>
       <div class="w3-container">
-        {{ form.hidden_tag() }}<br>
+        <br>
+        {% for message in get_flashed_messages() %}
+          <p class="w3-red">{{ message }}</p>
+        {% endfor %}
+        {{ form.hidden_tag() }}
         <div>{{ form.username.label }}<br></div>
         <div class="w3-block">{{ form.username }}</div>
         <br>
