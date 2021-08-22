@@ -14,12 +14,12 @@
   width: 100%;
 }
 
-#districts, #include, #exclude, #name, .accessibility {
+#districts, #include, #exclude, #name, #add, #delete, #change, .accessibility {
   display: none;
   margin: auto;
 }
 
-#include, #exclude, #districts {
+#include, #exclude, #districts, #name, #add, #delete, #change {
   width: 50%;
 }
 

@@ -13,6 +13,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 #     db.session.add(new)
 #     db.session.commit()
 
+#delete: Table.query.filter_by(username="").delete()
+#       db.session.commit()
+
 app = Flask(__name__)
 
 
@@ -51,6 +54,9 @@ class LoginForm(FlaskForm):
   username = StringField('Username', validators=[DataRequired()])
   password = PasswordField('Password', validators=[DataRequired()])
   remember_me = BooleanField('Remember Me')
+
+class EditForm(FlaskForm):
+  health_services = SelectField('health_options', validators=[DataRequired()], coerce=int)
 
 @login_manager.user_loader
 def user_loader(user_id):
@@ -129,8 +135,10 @@ def login():
   form = LoginForm()
   if form.validate_on_submit():
     user = User.query.filter_by(username=form.username.data).first()
-    if user is None or not user.check_password(form.password.data):
-      print("what")
+    if user is None:
+      flash('Please create account first!', 'error')
+      return redirect('/login')
+    elif not user.check_password(form.password.data):
       flash('Incorrect Password or Username', 'error')
       return redirect('/login')
     else:
@@ -141,7 +149,6 @@ def login():
 
 @app.route("/sign_up", methods=['GET', 'POST'])
 def sign_up():
-  print("incorrect route")
   new_user = User()
   form = LoginForm()
   print(request.method)
@@ -155,19 +162,25 @@ def sign_up():
       user = User.query.filter_by(username=form.username.data).first()
       login_user(user, remember=form.remember_me.data)
       return redirect("/")
-    else:
-      print("different fail")
-  else:
-    print("failed")
-    print(form.errors)
-  return render_template("login.html", form=form)
+  return render_template("sign_up.html", form=form)
 
-@app.route('/crud')
+@app.route('/crud', methods=['GET', 'POST'])
 def crud():
   if not current_user.is_authenticated or current_user.admin == 0:
     abort(404)
   else:
-    return render_template('crud.html')
+    form = EditForm()
+    health_services = HealthOption.query.all()
+    form.health_services.choices = [(health_service.id, health_service.name) for health_service in health_services]
+    if request.method == 'POST':
+      if form.validate_on_submit():
+        delete_item = HealthOption.query.get(form.health_services.data)
+        db.session.delete(delete_item)
+        db.session.commit()
+        return redirect('/')
+      else:
+        abort(404)
+    return render_template('crud.html', form=form)
 
 if __name__ == "__main__":
     app.run(port=8080, host='0.0.0.0', debug=True)

@@ -2,6 +2,46 @@
 
 {% block content %}
 
-<p>Stuff here sometime</p>
+<br>
+<div class="w3-container">
+    <p class="w3-center"><i class="italic">Edit information about health services in the database.</i></p>
+    <div class="w3-container w3-center w3-card-4">
+        <br>
+        <button type="button" class="w3-button w3-hover-teal" onclick="display('add')">Add Service<i class="fas fa-chevron-down"></i></button><br>
+        <div id="add" class="w3-left-align">
+            <p>Soon</p>
+        </div>
+        <button type="button" class="w3-button w3-hover-teal" onclick="display('delete')">Delete Service<i class="fas fa-chevron-down"></i></button><br>
+        <div id="delete" class="w3-left-align">
+            <form method="POST" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+                {{ form.health_services }}<br>
+                <button type="submit" class="w3-button w3-block w3-black">Change Information about Selected Service</button>
+            </form>
+        </div>
+        <button type="button" class="w3-button w3-hover-teal" onclick="display('change')">Change Service Information<i class="fas fa-chevron-down"></i></button><br>
+        <div id="change" class="w3-left-align">
+            <form method="POST" action="/crud" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+                {{ form.health_services }}<br>
+                <button type="submit" class="w3-button w3-block w3-black">Delete Selected Services</button>
+            </form>
+        </div>
+        <br>
+    </div>
+</div>
+<br>
+
+<script>
+    function display(section) {
+        var display_hidden = document.getElementById(section);
+        var displayed = window.getComputedStyle(display_hidden);
+        if (displayed["display"] === "none") {
+            display_hidden.style.display = "block";
+        } else {
+            display_hidden.style.display = "none";
+        }
+    }
+</script>
 
 {% endblock %}
