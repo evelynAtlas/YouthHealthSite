@@ -1,8 +1,9 @@
+from os import name
 from flask import Flask, render_template, request, redirect, abort, flash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import asc, desc
 from flask_wtf import FlaskForm
-from wtforms import TextField, StringField, IntegerField, PasswordField, BooleanField, SelectField, SubmitField
+from wtforms import TextField, StringField, IntegerField, PasswordField, BooleanField, SelectField, HiddenField
 from wtforms.validators import DataRequired, Optional, NumberRange, ValidationError, Length
 import sqlite3
 import library
@@ -56,7 +57,14 @@ class LoginForm(FlaskForm):
   remember_me = BooleanField('Remember Me')
 
 class EditForm(FlaskForm):
-  health_services = SelectField('health_options', validators=[DataRequired()], coerce=int)
+  form_type = HiddenField()
+  health_services = SelectField('Health Services', validators=[DataRequired()], coerce=int)
+
+class UpdateForm(FlaskForm):
+  name = StringField('Name')
+  blurb = StringField('Blurb')
+  accessibility = StringField('Accessibility')
+  location = StringField('Location')
 
 @login_manager.user_loader
 def user_loader(user_id):
@@ -169,18 +177,49 @@ def crud():
   if not current_user.is_authenticated or current_user.admin == 0:
     abort(404)
   else:
-    form = EditForm()
+    delete_change_form = EditForm()
     health_services = HealthOption.query.all()
-    form.health_services.choices = [(health_service.id, health_service.name) for health_service in health_services]
+    delete_change_form.health_services.choices = [(health_service.id, health_service.name) for health_service in health_services]
+    add_form = UpdateForm()
     if request.method == 'POST':
-      if form.validate_on_submit():
-        delete_item = HealthOption.query.get(form.health_services.data)
+      if add_form.validate_on_submit():
+        print("wowie")
+      if delete_change_form.validate_on_submit() and delete_change_form.form_type.data == 'delete':
+        print("delete called")
+        delete_item = HealthOption.query.get(delete_change_form.health_services.data)
         db.session.delete(delete_item)
         db.session.commit()
         return redirect('/')
+      elif delete_change_form.validate_on_submit() and delete_change_form.form_type.data == 'change':
+        change_item = HealthOption.query.get(delete_change_form.health_services.data)
+        return redirect('/crud/' + str(change_item.id))
       else:
         abort(404)
-    return render_template('crud.html', form=form)
+    return render_template('crud.html', delete_change_form=delete_change_form, add_form=add_form)
+
+@app.route('/crud/<string:service_id>', methods = ['GET', 'POST'])
+def change_service_info(service_id):
+  if not current_user.is_authenticated or current_user.admin == 0:
+    abort(404)
+  else:
+    form = UpdateForm()
+    if request.method == 'POST':
+      if form.validate_on_submit():
+        print(form.name.data)
+        chosen_service = HealthOption.query.get(service_id)
+        chosen_service.name = form.name.data
+        chosen_service.blurb = form.blurb.data
+        chosen_service.accessibility = form.accessibility.data
+        chosen_service.location = form.location.data
+        db.session.commit()
+        return redirect('/')
+    else:
+      chosen_service = HealthOption.query.get(service_id)
+      form.name.data = chosen_service.name
+      form.blurb.data = chosen_service.blurb
+      form.accessibility.data = chosen_service.accessibility
+      form.location.data = chosen_service.location
+    return render_template('change.html', form=form)
 
 if __name__ == "__main__":
     app.run(port=8080, host='0.0.0.0', debug=True)

@@ -9,22 +9,27 @@
         <br>
         <button type="button" class="w3-button w3-hover-teal" onclick="display('add')">Add Service<i class="fas fa-chevron-down"></i></button><br>
         <div id="add" class="w3-left-align">
-            <p>Soon</p>
+            <form method="POST">
+                {{ add_form.csrf_token() }}
+                {{ add_form.}}
+            </form>
         </div>
         <button type="button" class="w3-button w3-hover-teal" onclick="display('delete')">Delete Service<i class="fas fa-chevron-down"></i></button><br>
         <div id="delete" class="w3-left-align">
             <form method="POST" enctype="multipart/form-data">
-                {{ form.hidden_tag() }}
-                {{ form.health_services }}<br>
-                <button type="submit" class="w3-button w3-block w3-black">Change Information about Selected Service</button>
+                {{ delete_change_form.csrf_token() }}
+                {{ delete_change_form.form_type(value='delete') }}
+                {{ delete_change_form.health_services }}<br>
+                <button type="submit" class="w3-button w3-block w3-black">Delete Selected Service</button>
             </form>
         </div>
         <button type="button" class="w3-button w3-hover-teal" onclick="display('change')">Change Service Information<i class="fas fa-chevron-down"></i></button><br>
         <div id="change" class="w3-left-align">
             <form method="POST" action="/crud" enctype="multipart/form-data">
-                {{ form.hidden_tag() }}
-                {{ form.health_services }}<br>
-                <button type="submit" class="w3-button w3-block w3-black">Delete Selected Services</button>
+                {{ delete_change_form.csrf_token() }}
+                {{ delete_change_form.form_type(value='change') }}
+                {{ delete_change_form.health_services }}<br>
+                <button type="submit" class="w3-button w3-block w3-black">Update Selected Service</button>
             </form>
         </div>
         <br>

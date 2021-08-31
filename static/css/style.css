@@ -14,12 +14,12 @@
   width: 100%;
 }
 
-#districts, #include, #exclude, #name, #add, #delete, #change, .accessibility {
+#districts, #include, #exclude, #searched_name, #add, #delete, #change, .accessibility {
   display: none;
   margin: auto;
 }
 
-#include, #exclude, #districts, #name, #add, #delete, #change {
+#include, #exclude, #districts, #searched_name, #add, #delete, #change {
   width: 50%;
 }
 
