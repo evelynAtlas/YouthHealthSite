@@ -11,7 +11,11 @@
         <div id="add" class="w3-left-align">
             <form method="POST">
                 {{ add_form.csrf_token() }}
-                {{ add_form.}}
+                {{ add_form.name }}
+                {{ add_form.blurb }}
+                {{ add_form.accessibility }}
+                {{ add_form.location }}
+                <button type="submit" class="w3-button w3-block w3-black">Add Service</button>
             </form>
         </div>
         <button type="button" class="w3-button w3-hover-teal" onclick="display('delete')">Delete Service<i class="fas fa-chevron-down"></i></button><br>

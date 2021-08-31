@@ -183,9 +183,11 @@ def crud():
     add_form = UpdateForm()
     if request.method == 'POST':
       if add_form.validate_on_submit():
-        print("wowie")
+        new_service = HealthOption(name=add_form.name.data, blurb=add_form.blurb.data, accessibility=add_form.accessibility.data, location=add_form.location.data)
+        db.session.add(new_service)
+        db.session.commit()
+        return redirect('/')
       if delete_change_form.validate_on_submit() and delete_change_form.form_type.data == 'delete':
-        print("delete called")
         delete_item = HealthOption.query.get(delete_change_form.health_services.data)
         db.session.delete(delete_item)
         db.session.commit()
