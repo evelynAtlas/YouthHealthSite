@@ -1,5 +1,5 @@
 from os import name
-from flask import Flask, render_template, request, redirect, abort, flash
+from flask import Flask, render_template, request, redirect, abort, flash, session
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import asc, desc
 from flask_wtf import FlaskForm
@@ -61,6 +61,7 @@ class EditForm(FlaskForm):
   health_services = SelectField('Health Services', validators=[DataRequired()], coerce=int)
 
 class UpdateForm(FlaskForm):
+  form_type = HiddenField()
   name = StringField('Name')
   blurb = StringField('Blurb')
   accessibility = StringField('Accessibility')
@@ -86,12 +87,16 @@ def logout():
 
 @app.route("/browse")
 def browse():
+  if current_user.is_authenticated:
+    login_option ="no"
+  else:
+    login_option = "yes"
   results = HealthOption.query.order_by(HealthOption.id.desc())
   if current_user.is_authenticated and current_user.admin == 1:
     crud_option = "yes"
   else:
     crud_option = "no"
-  return render_template("browse.html", results=results, statement="Canterbury Health Services", crud_option=crud_option)
+  return render_template("browse.html", results=results, statement="Canterbury Health Services", crud_option=crud_option, login_option=login_option)
 
 
 @app.route("/advocacy")
@@ -138,19 +143,22 @@ def find_a_service():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+  print("correct route")
   if current_user.is_authenticated:
     return redirect('/')
   form = LoginForm()
   if form.validate_on_submit():
     user = User.query.filter_by(username=form.username.data).first()
+    print(user)
     if user is None:
-      flash('Please create account first!', 'error')
+      flash("No account with this username exists. If you haven't made an account, sign up!", 'error')
       return redirect('/login')
     elif not user.check_password(form.password.data):
-      flash('Incorrect Password or Username', 'error')
+      flash('Incorrect Password', 'error')
       return redirect('/login')
     else:
       login_user(user, remember=form.remember_me.data)
+      print("supposedly working")
       return redirect('/')
   return render_template('login.html', form=form, login = "Yes")
 
@@ -182,11 +190,16 @@ def crud():
     delete_change_form.health_services.choices = [(health_service.id, health_service.name) for health_service in health_services]
     add_form = UpdateForm()
     if request.method == 'POST':
-      if add_form.validate_on_submit():
-        new_service = HealthOption(name=add_form.name.data, blurb=add_form.blurb.data, accessibility=add_form.accessibility.data, location=add_form.location.data)
-        db.session.add(new_service)
-        db.session.commit()
-        return redirect('/')
+      if add_form.validate_on_submit() and add_form.form_type.data == 'add':
+        if add_form.name.data == "" or add_form.blurb.data == "" or add_form.accessibility.data == "" or add_form.location.data == "":
+          session.pop('_flashes', None)
+          flash('Please fill out all fields before adding service', 'error')
+          return render_template('crud.html', delete_change_form=delete_change_form, add_form=add_form)
+        else:
+          new_service = HealthOption(name=add_form.name.data, blurb=add_form.blurb.data, accessibility=add_form.accessibility.data, location=add_form.location.data)
+          db.session.add(new_service)
+          db.session.commit()
+          return redirect('/')
       if delete_change_form.validate_on_submit() and delete_change_form.form_type.data == 'delete':
         delete_item = HealthOption.query.get(delete_change_form.health_services.data)
         db.session.delete(delete_item)

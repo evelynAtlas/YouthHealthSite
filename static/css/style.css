@@ -19,7 +19,7 @@
   margin: auto;
 }
 
-#include, #exclude, #districts, #searched_name, #add, #delete, #change {
+#include, #exclude, #districts, #searched_name {
   width: 50%;
 }
 
