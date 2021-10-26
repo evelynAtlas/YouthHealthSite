@@ -37,14 +37,12 @@
   <br>
 </div>
 
+<!---->
 <script>
   function display(section) {
-    console.log(1)
     var display_hidden = document.getElementById(section);
-    console.log(display_hidden)
     var displayed = window.getComputedStyle(display_hidden);
     if (displayed["display"] === "none") {
-      console.log("working")
       display_hidden.style.display = "block";
     } else {
       display_hidden.style.display = "none";

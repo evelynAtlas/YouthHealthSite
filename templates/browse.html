@@ -2,22 +2,45 @@
 
 {% block content %}
 
+<!--Available to admin class users-->
 {% if crud_option == "yes" %}
-  <br><div><a href="/crud" class="w3-block w3-button w3-black"><h3>Update Service Information</h3></a></div>
+  <br><div><a href="/crud" class="w3-block w3-button w3-black"><h3>Change Service Information</h3></a></div>
 {% endif %}
 
 {% if results %}
   <br>
   {% for item in results %}
-    <div class="w3-card-4 w3-teal">
+  <div class="container">
+    <div class="w3-card-4 w3-teal w3-half">
       <header class="w3-container w3-black w3-center">
-        <h3>{{ item.name }}</h3>
+        <h3 class="service_name">{{ item.name }}</h3>
+        {% for i in range(item.rating|round(2, 'floor')|int) %}<!--Display stars = to whole number-->
+          <i class="fas fa-star"></i>
+        {% endfor %}
+        <!--Remains of <2 not displayed for visual simplicity-->
+        {% if (item.rating - item.rating|round(2, 'floor')|int) > 0.2 and (item.rating - item.rating|round(2, 'floor')|int) < 0.8 %}<!--Swedish rounding-->
+          <i class="fas fa-star-half"></i>
+        {% endif %}
+        {% if (item.rating - item.rating|round(2, 'floor')|int) >= 0.8 %}<!--Round up to another whole star-->
+          <i class="fas fa-star"></i>
+        {% endif %}
+        <button type="button" class="w3-button w3-hover-teal" onclick="display_rating('rate_service_{{ item.name }}', '{{ item.id }}')">Rate</button>
+        <!--Message toggled 'display: block' if user already rated service-->
+        <div id="pre-rated_{{ item.id }}" class="pre-rated"><p>You have already rated this service. If you wish to change your rating, enter a new one.</p></div>
+        <div id="rate_service_{{ item.name }}" class="rate_service">
+          <i class="fas fa-star rating_star_{{ item.id }}" id="star1_{{ item.id }}" value="{{ item.id }}" onmouseover="hovering('star1', '{{ item.id }}')" onmouseout="unhovered('{{ item.id }}')" onclick="rate('star1', '{{ item.id }}')"></i>
+          <i class="fas fa-star rating_star_{{ item.id }}" id="star2_{{ item.id }}" value="{{ item.id }}" onmouseover="hovering('star2', '{{ item.id }}')" onmouseout="unhovered('{{ item.id }}')" onclick="rate('star2', '{{ item.id }}')"></i>
+          <i class="fas fa-star rating_star_{{ item.id }}" id="star3_{{ item.id }}" value="{{ item.id }}" onmouseover="hovering('star3', '{{ item.id }}')" onmouseout="unhovered('{{ item.id }}')" onclick="rate('star3', '{{ item.id }}')"></i>
+          <i class="fas fa-star rating_star_{{ item.id }}" id="star4_{{ item.id }}" value="{{ item.id }}" onmouseover="hovering('star4', '{{ item.id }}')" onmouseout="unhovered('{{ item.id }}')" onclick="rate('star4', '{{ item.id }}')"></i>
+          <i class="fas fa-star rating_star_{{ item.id }}" id="star5_{{ item.id }}" value="{{ item.id }}" onmouseover="hovering('star5', '{{ item.id }}')" onmouseout="unhovered('{{ item.id }}')" onclick="rate('star5', '{{ item.id }}')"></i>
+        </div>
+        <br><br>
       </header>
       <div class="w3-container">
         <p>{{ item.blurb }}</p>
         <p><i class="fas fa-map-marker-alt"></i>{{ item.location }}</p><br>
         <div class="w3-center">
-          <button type="button" class="w3-button w3-black w3-block" onclick="display(accessibility_{{ loop.index }})">Accessibility<i class="fas fa-chevron-down"></i></button>
+          <button type="button" class="w3-button w3-black w3-block" onclick="display('accessibility_{{ loop.index }}')">Accessibility<i class="fas fa-chevron-down"></i></button>
           <div id="accessibility_{{ loop.index }}" class="w3-black accessibility w3-container">
             <p>{{ item.accessibility }}</p>
           </div>
@@ -26,18 +49,103 @@
       </div>
     </div>
     <br>
+  </div>
   {% endfor %}
 {% else %}
   <p class="w3-container">Nothing matched your search.</p>
 {% endif %}
 
+<!---->
+<script>
+  function display_rating(element_id, service_id) {
+    fetch('/browse/user_rating/' + service_id).then(function(response) {
+      response.json().then(function(data) {
+        if (data=='not logged in') {
+          var login = confirm("Please log in before rating a service.");
+          if (login == true) {
+            window.location = '/login';
+          }
+        }
+        else {
+          var displayed = document.getElementById(element_id);
+          if (window.getComputedStyle(displayed).display === "none") {
+            displayed.style.display = "block";
+          } else {
+            displayed.style.display = "none";
+          }
+          var rating_notice = document.getElementById('pre-rated_' + service_id);
+          if (window.getComputedStyle(rating_notice).display === "block") {
+            rating_notice.style.display = "none";
+          } else if (data=='Previous Rating') {
+            rating_notice.style.display = "block";
+          }
+        }
+      });
+    });
+  }
+</script>
+
+<!---->
+<script>
+  function rate(star_number, service_id) {
+    fetch('/browse/user_rating/' + service_id + '/' + star_number).then(function(response) {
+      response.json().then(function(data) {
+        if (data=='rating processed') {
+          alert("Rating received.");
+        }
+        else {
+          alert("Your rating could not be recorded.");
+        }
+      });
+      window.location.reload(true)
+    });
+  }
+</script>
+
+<!---->
+<script>
+  function hovering(star_number, service_id) {
+    num = star_number.slice(-1);
+    var star1 = document.getElementById('star1_' + service_id);
+    var star2 = document.getElementById('star2_' + service_id);
+    var star3 = document.getElementById('star3_' + service_id);
+    var star4 = document.getElementById('star4_' + service_id);
+    var star5 = document.getElementById('star5_' + service_id);
+    console.log(num)
+    star1.style.color = "yellow";
+    if (num > 1) {
+      star2.style.color = "yellow";
+      if (num > 2) {
+        star3.style.color = "yellow";
+        if (num > 3) {
+          star4.style.color = "yellow";
+          if (num > 4) {
+            star5.style.color = "yellow";
+          }
+        }
+      }
+    }
+  }
+</script>
+
+<!---->
+<script>
+  function unhovered(service_id) {
+    var rating_stars = document.getElementsByClassName("rating_star" + '_' + service_id);
+    for(var i = 0; i < rating_stars.length; i++){
+		  rating_stars[i].style.color = "white";
+    }
+  }
+</script>
+
+<!---->
 <script>
   function display(element_id) {
-    var displayed = window.getComputedStyle(element_id);
-    if (displayed["display"] === "none") {
-      element_id.style.display = "block";
+    var displayed = document.getElementById(element_id);
+    if (window.getComputedStyle(displayed).display === "none") {
+      displayed.style.display = "block";
     } else {
-      element_id.style.display = "none";
+      displayed.style.display = "none";
     }
   }
 </script>

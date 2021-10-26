@@ -2,8 +2,21 @@
   height: 15%;
 }
 
+h5 {
+  font-size: 4vw;
+}
+
+h3.service_name {
+  margin-bottom: 0%;
+}
+
+.logo {
+  width: 14%;
+}
+
 .logo_img {
-  width: 10%;
+  width: 90%;
+  max-width: 65px;
 }
 
 .homepage_img {
@@ -14,7 +27,7 @@
   width: 100%;
 }
 
-#districts, #include, #exclude, #searched_name, #add, #delete, #change, .accessibility {
+#districts, #include, #exclude, #searched_name, #add, #delete, #change, .pre-rated, .rate_service, .accessibility {
   display: none;
   margin: auto;
 }
@@ -29,6 +42,10 @@ i.fa-chevron-down {
 
 i.fa-map-marker-alt {
   margin-right: 2%;
+}
+
+i.fa-star-half, i.fa-star {
+  color: white;
 }
 
 .inline {
