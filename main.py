@@ -73,11 +73,7 @@ def user_loader(user_id):
 
 @app.route("/")
 def home():
-  if current_user.is_authenticated:
-    login_option ="no"
-  else:
-    login_option = "yes"
-  return render_template("home.html", login_option=login_option)
+  return render_template("home.html")
 
 @app.route('/logout')
 @login_required
@@ -87,16 +83,12 @@ def logout():
 
 @app.route("/browse")
 def browse():
-  if current_user.is_authenticated:
-    login_option ="no"
-  else:
-    login_option = "yes"
   results = HealthOption.query.order_by(HealthOption.id.desc())
   if current_user.is_authenticated and current_user.admin == 1:
     crud_option = "yes"
   else:
     crud_option = "no"
-  return render_template("browse.html", results=results, statement="Canterbury Health Services", crud_option=crud_option, login_option=login_option)
+  return render_template("browse.html", results=results, statement="Canterbury Health Services", crud_option=crud_option)
 
 
 @app.route("/advocacy")

@@ -24,7 +24,7 @@
                 {{ add_form.location.label }}<br>
                 {{ add_form.location }}<br>
                 <br>
-                <button type="submit" class="w3-button w3-block w3-black">Add Service</button>
+                <button type="submit" class="w3-button w3-block w3-black">Add</button>
             </form>
             <br>
         </div>
@@ -36,11 +36,11 @@
                 {{ delete_change_form.form_type(value='delete') }}
                 {{ delete_change_form.health_services }}<br>
                 <br>
-                <button type="submit" class="w3-button w3-block w3-black">Delete Selected Service</button>
+                <button type="submit" class="w3-button w3-block w3-black">Delete</button>
             </form>
             <br>
         </div>
-        <button type="button" class="w3-button w3-hover-teal" onclick="display('change')">Change Service Information<i class="fas fa-chevron-down"></i></button><br>
+        <button type="button" class="w3-button w3-hover-teal" onclick="display('change')">Update Service Information<i class="fas fa-chevron-down"></i></button><br>
         <div id="change" class="w3-center">
             <br>
             <form method="POST" action="/crud" enctype="multipart/form-data">
@@ -48,7 +48,7 @@
                 {{ delete_change_form.form_type(value='change') }}
                 {{ delete_change_form.health_services }}<br>
                 <br>
-                <button type="submit" class="w3-button w3-block w3-black">Update Selected Service</button>
+                <button type="submit" class="w3-button w3-block w3-black">Update</button>
             </form>
             <br>
         </div>
