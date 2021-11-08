@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, abort, flash, session
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import desc
 from flask_wtf import FlaskForm
 from flask.json import jsonify
 from wtforms import StringField, PasswordField, BooleanField, SelectField, HiddenField
@@ -91,7 +92,13 @@ def user_loader(user_id):
 
 @app.route("/")
 def home():
-  return render_template("home.html")
+  services = HealthOption.query.order_by(HealthOption.id.desc()).all()
+  newest_services = []
+  newest_services.append(services[0])
+  newest_services.append(services[1])
+  newest_services.append(services[2])
+  print(newest_services)
+  return render_template("home.html", services=newest_services)
 
 @app.route('/logout')  #triggered when log out button in header clicked
 @login_required

@@ -4,27 +4,27 @@
 
 <!--Available to admin class users-->
 {% if crud_option == "yes" %}
-  <br><div><a href="/crud" class="w3-block w3-button w3-black"><h3>Change Service Information</h3></a></div>
+  <br><div class="w3-content"><a href="/crud" class="w3-block w3-button w3-black w3-hover-teal"><h3>Change Service Information</h3></a></div><br>
 {% endif %}
 
 {% if results %}
   <br>
+  <div class="services">
   {% for item in results %}
-  <div class="container">
-    <div class="w3-card-4 w3-teal w3-half">
-      <header class="w3-container w3-black w3-center">
+    <div class="w3-card-4 w3-black w3-row w3-content">
+      <header class="w3-container w3-teal w3-center service_header">
         <h3 class="service_name">{{ item.name }}</h3>
         {% for i in range(item.rating|round(2, 'floor')|int) %}<!--Display stars = to whole number-->
-          <i class="fas fa-star"></i>
+          <i class="fas fa-star yellow"></i>
         {% endfor %}
         <!--Remains of <2 not displayed for visual simplicity-->
         {% if (item.rating - item.rating|round(2, 'floor')|int) > 0.2 and (item.rating - item.rating|round(2, 'floor')|int) < 0.8 %}<!--Swedish rounding-->
-          <i class="fas fa-star-half"></i>
+          <i class="fas fa-star-half yellow"></i>
         {% endif %}
         {% if (item.rating - item.rating|round(2, 'floor')|int) >= 0.8 %}<!--Round up to another whole star-->
-          <i class="fas fa-star"></i>
+          <i class="fas fa-star yellow"></i>
         {% endif %}
-        <button type="button" class="w3-button w3-hover-teal" onclick="display_rating('rate_service_{{ item.name }}', '{{ item.id }}')">Rate</button>
+        <button type="button" class="w3-button w3-hover-white" onclick="display_rating('rate_service_{{ item.name }}', '{{ item.id }}')">Rate</button>
         <!--Message toggled 'display: block' if user already rated service-->
         <div id="pre-rated_{{ item.id }}" class="pre-rated"><p>You have already rated this service. If you wish to change your rating, enter a new one.</p></div>
         <div id="rate_service_{{ item.name }}" class="rate_service">
@@ -40,7 +40,7 @@
         <p>{{ item.blurb }}</p>
         <p><i class="fas fa-map-marker-alt"></i>{{ item.location }}</p><br>
         <div class="w3-center">
-          <button type="button" class="w3-button w3-black w3-block" onclick="display('accessibility_{{ loop.index }}')">Accessibility<i class="fas fa-chevron-down"></i></button>
+          <button type="button" class="w3-button w3-teal w3-block" onclick="display('accessibility_{{ loop.index }}')">Accessibility<i class="fas fa-chevron-down"></i></button>
           <div id="accessibility_{{ loop.index }}" class="w3-black accessibility w3-container">
             <p>{{ item.accessibility }}</p>
           </div>
@@ -48,12 +48,13 @@
         <br>
       </div>
     </div>
-    <br>
-  </div>
+  <br>
   {% endfor %}
+  </div>
 {% else %}
   <p class="w3-container">Nothing matched your search.</p>
 {% endif %}
+<br>
 
 <!---->
 <script>
@@ -85,7 +86,6 @@
   }
 </script>
 
-<!---->
 <script>
   function rate(star_number, service_id) {
     fetch('/browse/user_rating/' + service_id + '/' + star_number).then(function(response) {
@@ -102,7 +102,6 @@
   }
 </script>
 
-<!---->
 <script>
   function hovering(star_number, service_id) {
     num = star_number.slice(-1);

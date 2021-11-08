@@ -1,9 +1,38 @@
+body {
+  height: 100%;
+}
+
 .header {
   height: 15%;
 }
 
+.sign_in {
+  padding-right: 0px;
+}
+
+nav {
+  position: sticky;
+  z-index: 1;
+  top: 0;
+}
+
+.about_title {
+  font-size: 6vw;
+  font-size: min(6vw, 62px);
+  text-align: center;
+}
+
+.about_blurb {
+  font-size: min(4vw, 30px);
+  text-align: center;
+}
+
 h5 {
   font-size: 4vw;
+}
+
+h6 {
+  font-size: min(4.5vw, 34px);
 }
 
 h3.service_name {
@@ -11,12 +40,18 @@ h3.service_name {
 }
 
 .logo {
-  width: 14%;
+  width: 7%;
+  padding-left: 1%;
+  padding-right: 0.5%;
 }
 
 .logo_img {
-  width: 90%;
+  width: 80%;
   max-width: 65px;
+}
+
+.image-border {
+  height: 16px;
 }
 
 .homepage_img {
@@ -25,6 +60,10 @@ h3.service_name {
 
 .example_img {
   width: 100%;
+}
+
+.services {
+  padding-bottom: 1%;
 }
 
 #districts, #include, #exclude, #searched_name, #add, #delete, #change, .pre-rated, .rate_service, .accessibility {
@@ -48,6 +87,14 @@ i.fa-star-half, i.fa-star {
   color: white;
 }
 
+.yellow {
+  color: yellow;
+}
+
 .inline {
   margin-left: 8px;
+}
+
+.slight_left {
+  margin-left: 4%;
 }
