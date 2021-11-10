@@ -20,19 +20,35 @@
       <input class="w3-check" type="checkbox" name="districts" value="Riccarton">
       <label>Riccarton</label><br>
       <input class="w3-check" type="checkbox" name="districts" value="Waltham">
-      <label>Waltham</label>
+      <label>Waltham</label><br>
+      <input class="w3-check" type="checkbox" name="districts" value="Central Business District">
+      <label>Central Business District</label><br>
+      <input class="w3-check" type="checkbox" name="districts" value="Linwood">
+      <label>Linwood</label><br>
+      <input class="w3-check" type="checkbox" name="districts" value="Merivale">
+      <label>Merivale</label>
     </div>
     <br>
     <button type="button" class="w3-button w3-hover-teal" onclick="display('include')">Include Services That<i class="fas fa-chevron-down"></i></button>
-    <div id="include">
+    <div id="include" class="w3-left-align">
       <input class="w3-check" type="checkbox" name="include" value="Recognises Community Card Holders">
-      <label>Recognise Community Card Holders</label>
+      <label>Recognise Community Card Holders</label><br>
+      <input class="w3-check" type="checkbox" name="include" value="Free for Under 18s">
+      <label>Provide Free Services to People Under 18</label><br>
+      <input class="w3-check" type="checkbox" name="include" value="Free for Anyone">
+      <label>Are Free for Anyone</label><br>
+      <input class="w3-check" type="checkbox" name="include" value="Open Late Hours">
+      <label>Are Open Late Hours</label>
     </div>
     <br>
     <button type="button" class="w3-button w3-hover-teal" onclick="display('exclude')">Exclude Services That<i class="fas fa-chevron-down"></i></button>
-    <div id="exclude">
+    <div id="exclude" class="w3-left-align">
       <input class="w3-check" type="checkbox" name="exclude" value="Higher Fees for Non-Residents">
-      <label>Have Higher Fees for Non-Residents</label>
+      <label>Have Higher Fees for Non-Residents</label><br>
+      <input class="w3-check" type="checkbox" name="exclude" value="Requires GP Referral">
+      <label>Require Referral by GP</label>
+      <input class="w3-check" type="checkbox" name="exclude" value="Open Business Days Only">
+      <label>Are Open Business Days Only</label>
     </div>
     <br><br>
     <input type="submit" value="Search" class="w3-btn w3-black w3-block">
@@ -41,7 +57,6 @@
   <br>
 </div>
 
-<!---->
 <script>
   function display(section) {
     var display_hidden = document.getElementById(section);

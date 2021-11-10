@@ -94,11 +94,29 @@ def user_loader(user_id):
 def home():
   services = HealthOption.query.order_by(HealthOption.id.desc()).all()
   newest_services = []
-  newest_services.append(services[0])
-  newest_services.append(services[1])
-  newest_services.append(services[2])
-  print(newest_services)
+  try:
+    newest_services.append(services[0])
+  except IndexError:
+    pass
+  try:
+    newest_services.append(services[1])
+  except IndexError:
+    pass
+  try:
+    newest_services.append(services[2])
+  except IndexError:
+    pass
   return render_template("home.html", services=newest_services)
+
+# custom 404 page
+@app.errorhandler(404)
+def fourofour_error(error):
+  return render_template('error.html', statement="Oops! This page does not exist!")
+
+# custom 414 page
+@app.errorhandler(414)
+def fouronefour_error(error):
+  return render_template('error.html', statement="Please keep input to a reasonable length.")
 
 @app.route('/logout')  #triggered when log out button in header clicked
 @login_required
@@ -144,6 +162,8 @@ def find_a_service():
     if include != []:
       for option in district_results:
         for item in include:
+          print(item)
+          print(option.accessibility)
           if str(item).lower() in option.accessibility.lower():  #Options users select on website match those in accessibility field
             inclusive_results.append(option)  #Include results that match filters
     else:  #User did not submit any inclusion filters

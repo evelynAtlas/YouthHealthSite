@@ -4,16 +4,14 @@
 
 <div class="w3-display-container">
   <img src="/static/images/home_image.jpg" class="homepage_img w3-opacity-min">
-  <div class="w3-display-bottomleft w3-container"><h1 class="about_title">About Us</h1>
-  <p class="about_blurb">Canterbury Health Directory provides information about health services in Canterbury. Anyone can use this website, but the directory itself is youth focused.</p></div>
+  <div class="w3-display-middle"><h1 class="about_title"><b>About Us</b></h1>
+  <p class="about_blurb"><b>Canterbury Health Directory provides information about health services in Canterbury. Anyone can use this website, but the directory itself is youth focused.</b></p></div>
 </div>
 
 <div class="w3-container w3-black image-border"></div>
 
 <br>
-<div class="w3-container">
-  <h6 class="w3-center"><i>Newly Added Services</i></h6><br>
-</div>
+<div class="w3-content"><h6 class="w3-block w3-button w3-black w3-hover-teal">Recently Added Services</h6></div><br>
 
 <div class="services">
 {% for item in services %}
@@ -88,24 +86,14 @@
   }
 </script>
 
-<!---->
 <script>
   function rate(star_number, service_id) {
     fetch('/browse/user_rating/' + service_id + '/' + star_number).then(function(response) {
-      response.json().then(function(data) {
-        if (data=='rating processed') {
-          alert("Rating received.");
-        }
-        else {
-          alert("Your rating could not be recorded.");
-        }
-      });
-      window.location.reload(true)
+      window.location.reload(true);
     });
   }
 </script>
 
-<!---->
 <script>
   function hovering(star_number, service_id) {
     num = star_number.slice(-1);

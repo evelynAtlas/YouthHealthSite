@@ -24,7 +24,7 @@
         {% if (item.rating - item.rating|round(2, 'floor')|int) >= 0.8 %}<!--Round up to another whole star-->
           <i class="fas fa-star yellow"></i>
         {% endif %}
-        <button type="button" class="w3-button w3-hover-white" onclick="display_rating('rate_service_{{ item.name }}', '{{ item.id }}')">Rate</button>
+        <button type="button" class="w3-button w3-hover-white" onclick='display_rating("rate_service_{{ item.name }}", "{{ item.id }}")'>Rate</button>
         <!--Message toggled 'display: block' if user already rated service-->
         <div id="pre-rated_{{ item.id }}" class="pre-rated"><p>You have already rated this service. If you wish to change your rating, enter a new one.</p></div>
         <div id="rate_service_{{ item.name }}" class="rate_service">
@@ -56,9 +56,9 @@
 {% endif %}
 <br>
 
-<!---->
 <script>
   function display_rating(element_id, service_id) {
+    console.log("working")
     fetch('/browse/user_rating/' + service_id).then(function(response) {
       response.json().then(function(data) {
         if (data=='not logged in') {
@@ -89,15 +89,7 @@
 <script>
   function rate(star_number, service_id) {
     fetch('/browse/user_rating/' + service_id + '/' + star_number).then(function(response) {
-      response.json().then(function(data) {
-        if (data=='rating processed') {
-          alert("Rating received.");
-        }
-        else {
-          alert("Your rating could not be recorded.");
-        }
-      });
-      window.location.reload(true)
+      window.location.reload(true);
     });
   }
 </script>
@@ -127,7 +119,6 @@
   }
 </script>
 
-<!---->
 <script>
   function unhovered(service_id) {
     var rating_stars = document.getElementsByClassName("rating_star" + '_' + service_id);
@@ -137,7 +128,6 @@
   }
 </script>
 
-<!---->
 <script>
   function display(element_id) {
     var displayed = document.getElementById(element_id);

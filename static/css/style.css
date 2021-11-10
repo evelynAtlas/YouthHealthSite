@@ -18,13 +18,17 @@ nav {
 
 .about_title {
   font-size: 6vw;
+  width: 100vw;
   font-size: min(6vw, 62px);
   text-align: center;
+  text-shadow: 0px 0px 100px white;
 }
 
 .about_blurb {
   font-size: min(4vw, 30px);
+  width: 100vw;
   text-align: center;
+  text-shadow: 0px 0px 100px white;
 }
 
 h5 {
