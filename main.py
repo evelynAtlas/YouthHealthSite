@@ -311,7 +311,7 @@ def process_rating(service, chosen_star):
   new_rating = Rating(service_id = service, user_id = current_user.id, value = chosen_star[4])
   db.session.add(new_rating)
   db.session.commit()
-  return jsonify("rating processed")
+  return "", 204
 
 if __name__ == "__main__":
     app.run(port=8080, host='0.0.0.0', debug=True)
