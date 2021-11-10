@@ -5,7 +5,6 @@ from flask_wtf import FlaskForm
 from flask.json import jsonify
 from wtforms import StringField, PasswordField, BooleanField, SelectField, HiddenField
 from wtforms.validators import DataRequired
-import library
 from flask_login import current_user, login_user, logout_user, login_required, UserMixin, LoginManager
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -108,12 +107,12 @@ def home():
     pass
   return render_template("home.html", services=newest_services)
 
-# custom 404 page
+# custom 404 page, in case user requests invalid url
 @app.errorhandler(404)
 def fourofour_error(error):
   return render_template('error.html', statement="Oops! This page does not exist!")
 
-# custom 414 page
+# custom 414 page, in case user inputs too much text
 @app.errorhandler(414)
 def fouronefour_error(error):
   return render_template('error.html', statement="Please keep input to a reasonable length.")
@@ -147,7 +146,12 @@ def find_a_service():
   if len(request.args) > 0:  #Triggers when user submits search criteria
     searched_name = request.args.get('searched_name')
     searched_name = "%{}%".format(searched_name)
-    results = HealthOption.query.filter(HealthOption.name.like(searched_name)).all()  #like = mispellings aren't a problem
+    results = HealthOption.query.filter(
+      db.or_(
+        HealthOption.name.like(searched_name), 
+        HealthOption.blurb.like(searched_name), 
+        HealthOption.accessibility.like(searched_name)
+        )).all()  #like = mispellings aren't a problem
     districts = request.args.getlist('districts')
     if districts != []:
       district_results = []

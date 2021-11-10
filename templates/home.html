@@ -11,7 +11,7 @@
 <div class="w3-container w3-black image-border"></div>
 
 <br>
-<div class="w3-content"><h6 class="w3-block w3-button w3-black w3-hover-teal">Recently Added Services</h6></div><br>
+<div class="w3-content"><h6 class="w3-block w3-container w3-center w3-black">Recently Added Services</h6></div><br>
 
 <div class="services">
 {% for item in services %}
@@ -28,7 +28,7 @@
       {% if (item.rating - item.rating|round(2, 'floor')|int) >= 0.8 %}<!--Round up to another whole star-->
         <i class="fas fa-star yellow"></i>
       {% endif %}
-      <button type="button" class="w3-button w3-hover-white" onclick="display_rating('rate_service_{{ item.name }}', '{{ item.id }}')">Rate</button>
+      <button type="button" class="w3-button w3-hover-white" onclick='display_rating("rate_service_{{ item.name }}", "{{ item.id }}")'>Rate</button>
       <!--Message toggled 'display: block' if user already rated service-->
       <div id="pre-rated_{{ item.id }}" class="pre-rated"><p>You have already rated this service. If you wish to change your rating, enter a new one.</p></div>
       <div id="rate_service_{{ item.name }}" class="rate_service">
